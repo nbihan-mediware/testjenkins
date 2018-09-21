@@ -19,13 +19,13 @@ node {
         }
 
         stage('Build Docker'){
-            println('Docker build')
+            def msg = powershell(returnStdout: true, script: 'Write-Output "Docker build!"')
+            println msg
         }
 
         stage('Deploy'){
 
-            println('Push to Repo')
-
+            println('Push to Docker registry')
         }
 
         stage('Cleanup'){
