@@ -1,51 +1,51 @@
 #!groovy
+pipeline {
+    node {
 
-node {
+        currentBuild.result = "SUCCESS"
 
-    currentBuild.result = "SUCCESS"
+        try {
+            stages
+                    {
+                        stage('Checkout') {
+                            checkout scm
+                        }
 
-    try {
-        stages
-                {
-                    stage('Checkout') {
-                        checkout scm
-                    }
+                        stage('Test') {
 
-                    stage('Test') {
+                            env.NODE_ENV = "test"
 
-                        env.NODE_ENV = "test"
+                            println("Environment will be : ${env.NODE_ENV}")
 
-                        println("Environment will be : ${env.NODE_ENV}")
+                        }
 
-                    }
+                        stage('Build Docker') {
+                            def msg = powershell(returnStdout: true, script: 'Write-Output "Docker build!"')
+                            println msg
+                        }
 
-                    stage('Build Docker') {
-                        def msg = powershell(returnStdout: true, script: 'Write-Output "Docker build!"')
-                        println msg
-                    }
+                        stage('Deploy') {
 
-                    stage('Deploy') {
+                            println('Push to Docker registry')
+                        }
 
-                        println('Push to Docker registry')
-                    }
+                        stage('Cleanup') {
 
-                    stage('Cleanup') {
-
-                        println('prune and cleanup')
+                            println('prune and cleanup')
 
 //            mail body: 'project build successful',
 //                    from: 'xxxx@yyyyy.com',
 //                    replyTo: 'xxxx@yyyy.com',
 //                    subject: 'project build successful',
 //                    to: 'yyyyy@yyyy.com'
+                        }
                     }
-                }
 
 
-    }
-    catch (err) {
+        }
+        catch (err) {
 
-        currentBuild.result = "FAILURE"
+            currentBuild.result = "FAILURE"
 
 //        mail body: "project build error is here: ${env.BUILD_URL}" ,
 //                from: 'xxxx@yyyy.com',
@@ -53,7 +53,8 @@ node {
 //                subject: 'project build failed',
 //                to: 'zzzz@yyyyy.com'
 
-        throw err
-    }
+            throw err
+        }
 
+    }
 }
