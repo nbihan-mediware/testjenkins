@@ -1,7 +1,6 @@
 #!groovy
 pipeline {
-    node {
-
+    agent none
         currentBuild.result = "SUCCESS"
 
         try {
@@ -55,6 +54,4 @@ pipeline {
 
             throw err
         }
-
-    }
 }
