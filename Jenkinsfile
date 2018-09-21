@@ -5,40 +5,41 @@ node {
     currentBuild.result = "SUCCESS"
 
     try {
+        stages
+                {
+                    stage('Checkout') {
+                        checkout scm
+                    }
 
-        stage('Checkout'){
-            checkout scm
-        }
+                    stage('Test') {
 
-        stage('Test'){
+                        env.NODE_ENV = "test"
 
-            env.NODE_ENV = "test"
+                        println("Environment will be : ${env.NODE_ENV}")
 
-            println("Environment will be : ${env.NODE_ENV}")
+                    }
 
-        }
+                    stage('Build Docker') {
+                        def msg = powershell(returnStdout: true, script: 'Write-Output "Docker build!"')
+                        println msg
+                    }
 
-        stage('Build Docker'){
-            def msg = powershell(returnStdout: false, script: 'Write-Output "Docker build!"')
-            println msg
-        }
+                    stage('Deploy') {
 
-        stage('Deploy'){
+                        println('Push to Docker registry')
+                    }
 
-            println('Push to Docker registry')
-        }
+                    stage('Cleanup') {
 
-        stage('Cleanup'){
-
-            println('prune and cleanup')
+                        println('prune and cleanup')
 
 //            mail body: 'project build successful',
 //                    from: 'xxxx@yyyyy.com',
 //                    replyTo: 'xxxx@yyyy.com',
 //                    subject: 'project build successful',
 //                    to: 'yyyyy@yyyy.com'
-        }
-
+                    }
+                }
 
 
     }
