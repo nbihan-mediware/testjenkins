@@ -19,7 +19,7 @@ node {
         }
 
         stage('Build Docker'){
-            def msg = powershell(returnStdout: true, script: 'Write-Output "Docker build!"')
+            def msg = powershell(returnStdout: false, script: 'Write-Output "Docker build!"')
             println msg
         }
 
